@@ -6,7 +6,6 @@ import {
   primaryKey,
   integer,
   varchar,
-  uuid,
 } from "drizzle-orm/pg-core";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -102,14 +101,13 @@ export const authenticators = pgTable(
 
 export const myBooks = pgTable("my_books", {
   id: text("myBooks_id")
-    .primaryKey()
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   bookId: text("book_id").notNull(),
 });
 
-export const wishList = pgTable("my_books", {
+export const wishList = pgTable("wishlist", {
   id: text("books_wishlist_id")
     .primaryKey()
     .notNull()
@@ -118,7 +116,7 @@ export const wishList = pgTable("my_books", {
   bookId: text("book_id").notNull(),
 });
 
-export const readingBooks = pgTable("my_books", {
+export const readingBooks = pgTable("reading_books", {
   id: text("reading_books_id")
     .primaryKey()
     .notNull()
