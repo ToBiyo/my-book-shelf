@@ -29,6 +29,48 @@
       "when": 1741805195043,
       "tag": "0003_bored_vance_astro",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1742988245335,
+      "tag": "0004_curvy_catseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1743183112928,
+      "tag": "0005_fast_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1743183229481,
+      "tag": "0006_jittery_synch",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1743183831106,
+      "tag": "0007_busy_sentinel",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1743183904501,
+      "tag": "0008_purple_captain_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1743183932621,
+      "tag": "0009_complex_sentinels",
+      "breakpoints": true
     }
   ]
 }

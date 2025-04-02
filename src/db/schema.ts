@@ -7,9 +7,11 @@ import {
   integer,
   varchar,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { check } from "drizzle-orm/gel-core";
 
 const connectionString = "postgres://postgres:postgres@localhost:5432/drizzle";
 const pool = postgres(connectionString, { max: 1 });
@@ -99,39 +101,50 @@ export const authenticators = pgTable(
   ]
 );
 
+//record dei libri letti
+
 export const myBooks = pgTable("my_books", {
   id: text("myBooks_id")
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: text("book_id").notNull(),
+  bookId: varchar("book_id").notNull(),
 });
 
-export const wishList = pgTable("wishlist", {
-  id: text("books_wishlist_id")
+//record libri da leggere
+export const wishRead = pgTable("wish_read", {
+  id: text("wishread_book_id")
     .primaryKey()
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: text("book_id").notNull(),
+  bookId: varchar("book_id").notNull(),
 });
 
+//record libri che si stanno leggendo
 export const readingBooks = pgTable("reading_books", {
-  id: text("reading_books_id")
+  id: text("reading_book_id")
     .primaryKey()
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: text("book_id").notNull(),
+  bookId: varchar("book_id").notNull(),
 });
 
-/* export const reviews = pgTable("reviews", {
-  id: text("review_id")
-    .primaryKey()
-    .notNull()
-    .$defaultFn(() => crypto.randomUUID()),
-  body: varchar({ length: 255 }).notNull(),
-  rating: integer(),
-  myBooksId: text("my_books_id").references(() => myBooks.id),
-});
- */
+//reviews per i libri già letti
+
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: text("review_id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
+    body: varchar({ length: 500 }).notNull(),
+    rating: integer(),
+    myBooksId: text("my_books_id").references(() => myBooks.id),
+  },
+  (table) => [
+    check("rating_check", sql`${table.rating} <= 5 AND ${table.rating} <= 0`),
+  ]
+);

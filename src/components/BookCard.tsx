@@ -1,7 +1,8 @@
-"use client";
 import Image from "next/image";
-import { useEffect } from "react";
 import { nanoid } from "nanoid";
+import { AddToMyBooksBtn } from "./AddToMyBooksBtn";
+import { AddToWishBooksBtn } from "./AddToWishBooksBtn";
+import { AddtoReadingBooksBtn } from "./AddToReadingBooksBtn";
 
 export type BookData = {
   author: string[];
@@ -26,6 +27,12 @@ export default function BookCard({ bookInfo }: { bookInfo: BookData }) {
         {author.map((author: string) => (
           <h2 key={nanoid()}>{author}</h2>
         ))}
+      </div>
+      <div className="flex flex-col gap-1">
+        {" "}
+        <AddToMyBooksBtn bookId={book_key} />
+        <AddtoReadingBooksBtn bookId={book_key} />
+        <AddToWishBooksBtn bookId={book_key} />
       </div>
     </div>
   );

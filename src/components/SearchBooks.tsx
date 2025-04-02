@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { SessionProvider } from "next-auth/react";
 import { fetchApiData } from "@/lib/util/utils";
 import { BooksPreview } from "./BooksPreview";
 import { BooksSearchBar } from "./BooksSearchBar";
@@ -8,12 +8,13 @@ import { BooksSearchBar } from "./BooksSearchBar";
 export default function SearchBooks() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [books, setBooks] = useState(null);
-  const [loading, setLoading] = useState<boolean>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getData = async (query: string) => {
     setLoading(true);
 
     const books = await fetchApiData(query);
+
     if (!books) {
       setBooks(null);
       return;
@@ -46,7 +47,11 @@ export default function SearchBooks() {
     <div className="flex flex-col items-center">
       <BooksSearchBar onSearchInputChange={setSearchInput} />
       {loading && <h2>Loading...</h2>}
-      {books && <BooksPreview books={books} />}
+      {books && (
+        <SessionProvider>
+          <BooksPreview books={books} />
+        </SessionProvider>
+      )}
     </div>
   );
 }

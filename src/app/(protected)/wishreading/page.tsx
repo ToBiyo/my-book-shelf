@@ -1,5 +1,10 @@
 import React from "react";
+import { auth } from "../../../../auth";
 
-export default function page() {
-  return <div>wishreading</div>;
+export default async function page() {
+  const session = await auth();
+
+  const user = session?.user?.name;
+
+  return <div>Welcome {user}</div>;
 }

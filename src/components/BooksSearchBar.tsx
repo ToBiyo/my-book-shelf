@@ -15,7 +15,7 @@ export const BooksSearchBar: React.FC<ChildProps> = ({
         className="p-2 flex items-center justify-center text-lg text-black outline-none"
         type="text"
         placeholder="Book title"
-        onChange={(e) => {
+        onKeyUp={(e) => {
           onSearchInputChange(e.target.value);
         }}
       />
