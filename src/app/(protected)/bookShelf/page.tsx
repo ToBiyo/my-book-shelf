@@ -1,6 +1,3 @@
-/* "use client";
-import { useEffect } from "react"; */
-
 import { cookies } from "next/headers";
 
 export default async function page() {
@@ -22,17 +19,16 @@ export default async function page() {
     },
   });
   const { books } = await request.json();
-  const { bookId } = books[0];
+  console.log(books);
 
-  const dataUri = endpoint + bookId + ".json";
+  /* const dataUri = endpoint + bookId + ".json";
 
   const dataResponse = await fetch(dataUri);
-  const book = await dataResponse.json();
-  console.log(book);
+  const book = await dataResponse.json(); */
 
   return (
     <div>
-      <pre>{dataUri}</pre>
+      <pre>{}</pre>
     </div>
   );
 }

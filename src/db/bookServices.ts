@@ -3,8 +3,14 @@ import { db } from "./db";
 import { getUserByEmail } from "./userServices";
 import { eq } from "drizzle-orm";
 
+export type BookRecords = {
+  id: string;
+  userId: string | null;
+  bookId: string;
+};
+
 //mybooks queries
-export async function getMyBooks(email: string) {
+export async function getMyBooks(email: string): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -17,11 +23,14 @@ export async function getMyBooks(email: string) {
   return books;
 }
 
-export async function addToMyBoks(email: string, bookId: string) {
+export async function addToMyBoks(
+  email: string,
+  bookId: string
+): Promise<BookRecords[]> {
   const user = await getUserByEmail(email);
 
   if (!user || !bookId) {
-    return;
+    return [];
   }
 
   const id = user[0].id;
@@ -35,7 +44,7 @@ export async function addToMyBoks(email: string, bookId: string) {
 }
 
 //wishRead Books
-export async function getWishBooks(email: string) {
+export async function getWishBooks(email: string): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -48,11 +57,14 @@ export async function getWishBooks(email: string) {
   return books;
 }
 
-export async function addToWishBoks(email: string, bookId: string) {
+export async function addToWishBoks(
+  email: string,
+  bookId: string
+): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
   if (!user || !bookId) {
-    return;
+    return [];
   }
 
   const id = user[0].id;
@@ -65,7 +77,9 @@ export async function addToWishBoks(email: string, bookId: string) {
   return books;
 }
 //reding Books
-export async function getReadingBooks(email: string) {
+export async function getReadingBooks(
+  email: string
+): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -81,11 +95,14 @@ export async function getReadingBooks(email: string) {
   return books;
 }
 
-export async function addToReadingBoks(email: string, bookId: string) {
+export async function addToReadingBoks(
+  email: string,
+  bookId: string
+): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
   if (!user || !bookId) {
-    return;
+    return [];
   }
 
   const id = user[0].id;
