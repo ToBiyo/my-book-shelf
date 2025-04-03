@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import deafaultUser from "../../public/defaultUser.jpg";
 
-export default function ProfileMnagmenteBtn() {
+export const ManageProfileBtn = () => {
   const { data: session } = useSession();
   const [display, setDispaly] = useState(false);
 
@@ -61,4 +61,4 @@ export default function ProfileMnagmenteBtn() {
       </div>
     </div>
   );
-}
+};

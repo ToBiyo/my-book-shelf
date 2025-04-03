@@ -1,5 +1,14 @@
 import { LoginControllers } from "@/components/LoginControllers";
-export default function Home() {
+import { auth } from "../../auth";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const session = await auth();
+
+  if (session) {
+    redirect("/bookShelf");
+  }
+
   return (
     <div className=" min-h-screen flex flex-col items-center justify-center gap-14">
       <h1 className="text-4xl">

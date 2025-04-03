@@ -6,12 +6,14 @@ import {
   primaryKey,
   integer,
   varchar,
+  real,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { check } from "drizzle-orm/gel-core";
+import { and } from "drizzle-orm";
 
 const connectionString = "postgres://postgres:postgres@localhost:5432/drizzle";
 const pool = postgres(connectionString, { max: 1 });
@@ -103,13 +105,23 @@ export const authenticators = pgTable(
 
 //record dei libri letti
 
-export const myBooks = pgTable("my_books", {
-  id: text("myBooks_id")
-    .notNull()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: varchar("book_id").notNull(),
-});
+export const myBooks = pgTable(
+  "my_books",
+  {
+    id: text("myBooks_id")
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+    bookId: varchar("book_id").notNull(),
+    title: varchar("book_title").notNull(),
+    coverUrl: varchar("cover_url").notNull(),
+    authors: varchar({ length: 125 }).array().notNull(),
+    rating: real("rating").default(0),
+  }
+  /* (table) => [
+    check("rating_check", sql`${table.rating} >= 0 AND ${table.rating} <= 5`),
+  ] */
+);
 
 //record libri da leggere
 export const wishRead = pgTable("wish_read", {
@@ -119,6 +131,9 @@ export const wishRead = pgTable("wish_read", {
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   bookId: varchar("book_id").notNull(),
+  title: varchar("book_title").notNull(),
+  coverUrl: varchar("cover_url").notNull(),
+  authors: varchar({ length: 125 }).array().notNull(),
 });
 
 //record libri che si stanno leggendo
@@ -129,11 +144,14 @@ export const readingBooks = pgTable("reading_books", {
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   bookId: varchar("book_id").notNull(),
+  title: varchar("book_title").notNull(),
+  coverUrl: varchar("cover_url").notNull(),
+  authors: varchar({ length: 125 }).array().notNull(),
 });
 
 //reviews per i libri già letti
 
-export const reviews = pgTable(
+/* export const reviews = pgTable(
   "reviews",
   {
     id: text("review_id")
@@ -147,4 +165,4 @@ export const reviews = pgTable(
   (table) => [
     check("rating_check", sql`${table.rating} <= 5 AND ${table.rating} <= 0`),
   ]
-);
+); */

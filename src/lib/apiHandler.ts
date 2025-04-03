@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "../../auth";
 import { BookRecords } from "@/db/bookServices";
 
 const headers = { "Content-Type": "application/json" };
@@ -40,10 +40,11 @@ export async function getHandler(
   }
 }
 
+import { BookData } from "@/components/SearchPreviewCard";
 //handler for post request
 export async function postHandler(
   req: NextRequest,
-  addRecord: (email: string, bookId: string) => Promise<BookRecords[] | []>
+  addRecord: (email: string, book: BookData) => Promise<BookRecords[] | []>
 ) {
   try {
     const session = await auth();
@@ -61,8 +62,8 @@ export async function postHandler(
     const email = session.user.email;
 
     const newRecord = await req.json();
-    const { bookId } = newRecord;
-    const result = await addRecord(email, bookId);
+    const { book } = newRecord;
+    const result = await addRecord(email, book);
     return new Response(JSON.stringify({ result }), {
       status: 200,
       headers: headers,

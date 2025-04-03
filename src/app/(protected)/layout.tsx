@@ -24,6 +24,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <Nav />
+
         {children}
       </body>
     </html>

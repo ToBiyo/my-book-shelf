@@ -12,13 +12,14 @@ export const BooksSearchBar: React.FC<ChildProps> = ({
   return (
     <div className="my-14 flex items-center">
       <input
-        className="p-2 flex items-center justify-center text-lg text-black outline-none"
+        className="p-2 flex items-center justify-center text-lg text-black outline-none bg-slate-300 rounded-lg"
         type="text"
         placeholder="Book title"
         onKeyUp={(e) => {
           onSearchInputChange(e.target.value);
         }}
       />
+      <FontAwesomeIcon icon={faSearch} />
     </div>
   );
 };

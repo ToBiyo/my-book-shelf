@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ProfileMnagmenteBtn from "./ProfileMnagmenteBtn";
+import { ManageProfileBtn } from "./ManageProfileBtn";
 import { SessionProvider } from "next-auth/react";
 export default function Nav() {
   return (
@@ -7,14 +7,11 @@ export default function Nav() {
       <p className="text-2xl">
         my<span className="text-emerald-300 text-4xl">Book</span>shelf
       </p>
-      <div className="flex gap-2 items-center w-auto">
-        <Link href="/books" className="text-lg">
-          Books
-        </Link>
-        <Link href="/bookShelf" className="text-lg">
+      <div className="flex gap-4 items-center w-auto">
+        <Link href="/myBooks" className="text-lg">
           MyBooks
         </Link>
-        <Link href="/wishreading" className="text-lg">
+        <Link href="/wishReading" className="text-lg">
           WishList
         </Link>
         <Link href="readingBooks" className="text-lg">
@@ -25,7 +22,7 @@ export default function Nav() {
         </Link>
       </div>
       <SessionProvider>
-        <ProfileMnagmenteBtn />
+        <ManageProfileBtn />
       </SessionProvider>
     </nav>
   );

@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
-import { fetchApiData } from "@/lib/util/utils";
+import { fetchSearchApiData } from "@/lib/util/utils";
 import { BooksPreview } from "./BooksPreview";
 import { BooksSearchBar } from "./BooksSearchBar";
 
-export default function SearchBooks() {
+export const PreviewSearchedBooks = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [books, setBooks] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -13,7 +13,7 @@ export default function SearchBooks() {
   const getData = async (query: string) => {
     setLoading(true);
 
-    const books = await fetchApiData(query);
+    const books = await fetchSearchApiData(query);
 
     if (!books) {
       setBooks(null);
@@ -26,14 +26,14 @@ export default function SearchBooks() {
       )
       .map((book: any) => {
         return {
-          author: book.author_name,
+          authors: book.author_name,
           title: book.title,
           book_key: book.key,
           cover_url: `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`,
         };
       });
-    setBooks(formatted);
     setLoading(false);
+    setBooks(formatted);
   };
 
   useEffect(() => {
@@ -44,14 +44,13 @@ export default function SearchBooks() {
   }, [searchInput]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center absolute">
       <BooksSearchBar onSearchInputChange={setSearchInput} />
       {loading && <h2>Loading...</h2>}
-      {books && (
-        <SessionProvider>
-          <BooksPreview books={books} />
-        </SessionProvider>
-      )}
+
+      <SessionProvider>
+        {books && <BooksPreview books={books} />}
+      </SessionProvider>
     </div>
   );
-}
+};

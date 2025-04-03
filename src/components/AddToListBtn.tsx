@@ -1,14 +1,27 @@
 import { useState, useEffect } from "react";
+import { BookData } from "./SearchPreviewCard";
 
-export const AddToMyBooksBtn = ({ bookId }: { bookId: string }) => {
+/* bookShelf */
+export const AddToListBtn = ({
+  book,
+  apiEndpoint,
+  buttonText,
+}: {
+  book: BookData;
+  apiEndpoint: string;
+  buttonText: string;
+}) => {
   const [clickedTimes, setClickedTimes] = useState<number>(0);
 
   const postNewBook = async () => {
-    const request = await fetch("http://localhost:3000/api/books/bookShelf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookId: bookId }),
-    });
+    const request = await fetch(
+      "http://localhost:3000/api/books/" + apiEndpoint,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ book: book }),
+      }
+    );
 
     const response = await request.json();
 
@@ -32,7 +45,7 @@ export const AddToMyBooksBtn = ({ bookId }: { bookId: string }) => {
         setClickedTimes((prev) => prev + 1);
       }}
     >
-      My Books +
+      {buttonText}
     </button>
   );
 };

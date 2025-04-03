@@ -2,7 +2,7 @@ import { myBooks, wishRead, readingBooks } from "./schema";
 import { db } from "./db";
 import { getUserByEmail } from "./userServices";
 import { eq } from "drizzle-orm";
-
+import { BookData } from "@/components/SearchPreviewCard";
 export type BookRecords = {
   id: string;
   userId: string | null;
@@ -25,19 +25,26 @@ export async function getMyBooks(email: string): Promise<BookRecords[] | []> {
 
 export async function addToMyBoks(
   email: string,
-  bookId: string
+  book: BookData
 ): Promise<BookRecords[]> {
   const user = await getUserByEmail(email);
 
-  if (!user || !bookId) {
+  if (!user || !book) {
     return [];
   }
 
   const id = user[0].id;
+  const { authors, title, book_key, cover_url } = book;
 
   const books = await db
     .insert(myBooks)
-    .values({ userId: id, bookId: bookId })
+    .values({
+      userId: id,
+      bookId: book_key,
+      title: title,
+      coverUrl: cover_url,
+      authors: authors,
+    })
     .returning();
 
   return books;
@@ -59,23 +66,32 @@ export async function getWishBooks(email: string): Promise<BookRecords[] | []> {
 
 export async function addToWishBoks(
   email: string,
-  bookId: string
+  book: BookData
 ): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
-  if (!user || !bookId) {
+  if (!user || !book) {
     return [];
   }
 
   const id = user[0].id;
 
+  const { authors, title, book_key, cover_url } = book;
+
   const books = await db
     .insert(wishRead)
-    .values({ userId: id, bookId: bookId })
+    .values({
+      userId: id,
+      bookId: book_key,
+      title: title,
+      coverUrl: cover_url,
+      authors: authors,
+    })
     .returning();
 
   return books;
 }
+
 //reding Books
 export async function getReadingBooks(
   email: string
@@ -97,19 +113,26 @@ export async function getReadingBooks(
 
 export async function addToReadingBoks(
   email: string,
-  bookId: string
+  book: BookData
 ): Promise<BookRecords[] | []> {
   const user = await getUserByEmail(email);
 
-  if (!user || !bookId) {
+  if (!user || !book) {
     return [];
   }
 
   const id = user[0].id;
+  const { authors, title, book_key, cover_url } = book;
 
   const books = await db
     .insert(readingBooks)
-    .values({ userId: id, bookId: bookId })
+    .values({
+      userId: id,
+      bookId: book_key,
+      title: title,
+      coverUrl: cover_url,
+      authors: authors,
+    })
     .returning();
 
   return books;
