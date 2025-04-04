@@ -4,52 +4,47 @@ import { SessionProvider } from "next-auth/react";
 import { fetchSearchApiData } from "@/lib/util/utils";
 import { BooksPreview } from "./BooksPreview";
 import { BooksSearchBar } from "./BooksSearchBar";
+import { filterBooks } from "@/lib/util/utils";
+import { BookData } from "./SearchPreviewCard";
 
 export const PreviewSearchedBooks = () => {
   const [searchInput, setSearchInput] = useState<string>("");
-  const [books, setBooks] = useState(null);
+  const [books, setBooks] = useState<BookData[] | null>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [display, setDisplay] = useState<boolean>(false);
 
   const getData = async (query: string) => {
-    setLoading(true);
-
-    const books = await fetchSearchApiData(query);
-
-    if (!books) {
-      setBooks(null);
+    const booksData = await fetchSearchApiData(query);
+    if (!booksData) {
       return;
     }
-
-    let formatted = books
-      .filter(
-        (book: any) => "author_name" in book && "cover_edition_key" in book
-      )
-      .map((book: any) => {
-        return {
-          authors: book.author_name,
-          title: book.title,
-          book_key: book.key,
-          cover_url: `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`,
-        };
-      });
-    setLoading(false);
-    setBooks(formatted);
+    let formattedBooks = filterBooks(booksData);
+    setBooks(formattedBooks);
+    return;
   };
 
   useEffect(() => {
+    setLoading(true);
+
     const debounceData = setTimeout(() => {
       getData(searchInput);
-    }, 300);
-    return () => clearTimeout(debounceData);
+    }, 1000);
+
+    setDisplay(true);
+    setLoading(false);
+    return () => {
+      return clearTimeout(debounceData);
+    };
   }, [searchInput]);
 
   return (
-    <div className="flex flex-col items-center absolute">
+    <div className="flex flex-col w-full items-center relative">
       <BooksSearchBar onSearchInputChange={setSearchInput} />
       {loading && <h2>Loading...</h2>}
-
       <SessionProvider>
-        {books && <BooksPreview books={books} />}
+        {books && display && (
+          <BooksPreview books={books} onDisplayChange={setDisplay} />
+        )}
       </SessionProvider>
     </div>
   );

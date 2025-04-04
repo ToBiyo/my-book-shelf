@@ -1,7 +1,7 @@
 import {
   signInGoogleAction,
   signInGithubAction,
-} from "@/lib/util/signInAction";
+} from "@/lib/util/authenticationAction";
 
 import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

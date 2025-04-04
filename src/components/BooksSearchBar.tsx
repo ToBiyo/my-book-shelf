@@ -10,7 +10,7 @@ export const BooksSearchBar: React.FC<ChildProps> = ({
   onSearchInputChange,
 }) => {
   return (
-    <div className="my-14 flex items-center">
+    <div className="my-5 flex items-center">
       <input
         className="p-2 flex items-center justify-center text-lg text-black outline-none bg-slate-300 rounded-lg"
         type="text"
@@ -19,7 +19,6 @@ export const BooksSearchBar: React.FC<ChildProps> = ({
           onSearchInputChange(e.target.value);
         }}
       />
-      <FontAwesomeIcon icon={faSearch} />
     </div>
   );
 };

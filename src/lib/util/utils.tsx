@@ -12,3 +12,17 @@ export const fetchWorkApiData = async <T,>(id: T) => {
 
   return data;
 };
+
+export const filterBooks = (books: any[]) => {
+  const filteredBooks = books
+    .filter((book: any) => "author_name" in book && "cover_edition_key" in book)
+    .map((book: any) => {
+      return {
+        authors: book.author_name,
+        title: book.title,
+        book_key: book.key,
+        cover_url: `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`,
+      };
+    });
+  return filteredBooks;
+};

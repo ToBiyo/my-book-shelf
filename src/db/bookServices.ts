@@ -59,7 +59,7 @@ export async function getWishBooks(email: string): Promise<BookRecords[] | []> {
   }
 
   const id = user[0].id;
-  const books = await db.select().from(wishRead).where(eq(myBooks.userId, id));
+  const books = await db.select().from(wishRead).where(eq(wishRead.userId, id));
 
   return books;
 }
@@ -106,7 +106,7 @@ export async function getReadingBooks(
   const books = await db
     .select()
     .from(readingBooks)
-    .where(eq(myBooks.userId, id));
+    .where(eq(readingBooks.userId, id));
 
   return books;
 }

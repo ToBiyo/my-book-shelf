@@ -1,5 +1,5 @@
 "use client";
-import { signOutAction } from "@/lib/util/signOutAction";
+import { signOutAction } from "@/lib/util/authenticationAction";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "../../auth";

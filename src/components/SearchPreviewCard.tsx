@@ -11,7 +11,6 @@ export type BookData = {
 
 export const SearchPreviewCard = ({ book }: { book: BookData }) => {
   const { title, authors, cover_url } = book;
-  console.log(book);
 
   return (
     <div className="flex items-center w-full gap-28">
