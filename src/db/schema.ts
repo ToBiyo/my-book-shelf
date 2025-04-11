@@ -109,6 +109,7 @@ export const myBooks = pgTable(
   "my_books",
   {
     id: text("myBooks_id")
+      .primaryKey()
       .notNull()
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
@@ -151,18 +152,11 @@ export const readingBooks = pgTable("reading_books", {
 
 //reviews per i libri già letti
 
-/* export const reviews = pgTable(
-  "reviews",
-  {
-    id: text("review_id")
-      .primaryKey()
-      .notNull()
-      .$defaultFn(() => crypto.randomUUID()),
-    body: varchar({ length: 500 }).notNull(),
-    rating: integer(),
-    myBooksId: text("my_books_id").references(() => myBooks.id),
-  },
-  (table) => [
-    check("rating_check", sql`${table.rating} <= 5 AND ${table.rating} <= 0`),
-  ]
-); */
+export const reviews = pgTable("personal_notes", {
+  id: text("notes_id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
+  body: varchar({ length: 500 }).notNull(),
+  myBooksId: text("my_books_id").references(() => myBooks.id),
+});

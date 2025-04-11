@@ -13,34 +13,33 @@ export const SearchPreviewCard = ({ book }: { book: BookData }) => {
   const { title, authors, cover_url } = book;
 
   return (
-    <div className="flex items-center w-full gap-28">
+    <div className="flex items-center  justify-between">
       <Image
         src={cover_url}
         width={80}
         height={70}
         alt={title + " book cover"}
-      ></Image>
-      <h3 className="w-2/4">{title}</h3>
+        className="min-w-28"
+      />
       <div className="flex flex-col gap-1">
+        <h3 className="text-xl">{title}</h3>
         {authors.map((author: string) => (
-          <h2 key={nanoid()}>{author}</h2>
+          <h2 key={nanoid()} className="text-lg">
+            {author}
+          </h2>
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <AddToListBtn
-          book={book}
-          apiEndpoint="myBooks"
-          buttonText="Add to myBooks"
-        />
+        <AddToListBtn book={book} apiEndpoint="myBooks" buttonText="My Books" />
         <AddToListBtn
           book={book}
           apiEndpoint="readingBooks"
-          buttonText="Add to reading Books"
+          buttonText="Reading"
         />
         <AddToListBtn
           book={book}
           apiEndpoint="wishReading"
-          buttonText="Add to wish Reading"
+          buttonText="Wishlist"
         />
       </div>
     </div>

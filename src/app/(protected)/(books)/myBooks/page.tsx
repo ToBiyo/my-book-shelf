@@ -1,4 +1,4 @@
-import { PreviewSearchedBooks } from "@/components/PreviewSearchedBooks";
+import { PreviewContainer } from "@/components/PreviewContainer";
 import { BookListPreview } from "@/components/BookListPreview";
 import { getCookiesAction } from "@/lib/util/authenticationAction";
 
@@ -14,10 +14,10 @@ export default async function page() {
   const { books } = await request.json();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
       <h1 className="text-4xl my-10 text-center">My Books</h1>
       <div className="flex flex-col w-full justify-center items-center">
-        <PreviewSearchedBooks />
+        <PreviewContainer />
         <BookListPreview books={books} />
       </div>
     </div>

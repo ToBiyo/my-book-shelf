@@ -1,6 +1,6 @@
 import { getCookiesAction } from "@/lib/util/authenticationAction";
-import { PreviewSearchedBooks } from "@/components/PreviewSearchedBooks";
 import { BookListPreview } from "@/components/BookListPreview";
+import { PreviewContainer } from "@/components/PreviewContainer";
 
 export default async function page() {
   const SessionToken = await getCookiesAction("authjs.session-token");
@@ -18,7 +18,7 @@ export default async function page() {
     <div className="flex flex-col">
       <h1 className="text-4xl my-10 text-center">My Books</h1>
       <div className="flex flex-col w-full justify-center items-center">
-        <PreviewSearchedBooks />
+        <PreviewContainer />
         {books && <BookListPreview books={books} />}
       </div>
     </div>

@@ -12,7 +12,7 @@ export const BooksSearchBar: React.FC<ChildProps> = ({
   return (
     <div className="my-5 flex items-center">
       <input
-        className="p-2 flex items-center justify-center text-lg text-black outline-none bg-slate-300 rounded-lg"
+        className="p-2 flex items-center justify-center text-lg text-black outline-none border rounded-lg min-w-64 min-h-12 outline-emerald-400"
         type="text"
         placeholder="Book title"
         onKeyUp={(e) => {

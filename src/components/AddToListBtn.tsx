@@ -40,7 +40,7 @@ export const AddToListBtn = ({
 
   return (
     <button
-      className="bg-slate-50 rounded-lg min-w-32 text-black py-1"
+      className="bg-emerald-400 rounded-lg min-w-32 text-white py-1"
       onClick={() => {
         setClickedTimes((prev) => prev + 1);
       }}
