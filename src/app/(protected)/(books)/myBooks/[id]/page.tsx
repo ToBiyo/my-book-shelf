@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { nanoid } from "nanoid";
 
+import { Rating } from "@/components/Rating";
+
 export default async function Page({
   params,
 }: {
@@ -17,11 +19,8 @@ export default async function Page({
   const endpoint = "https://openlibrary.org/works/" + workId + ".json";
   const response = await fetch(endpoint);
   const data = await response.json();
-  console.log(data);
 
   const { covers, title, description } = data;
-
-  console.log(data);
 
   const coverUrl =
     "https://covers.openlibrary.org/b/id/" + covers[0] + "-L.jpg";
@@ -41,6 +40,7 @@ export default async function Page({
         alt="book cover"
         className="min-w-44 shadow-xl shadow-black"
       ></Image>
+      <Rating></Rating>
       {/* <p>{description}</p> */}
     </div>
   );

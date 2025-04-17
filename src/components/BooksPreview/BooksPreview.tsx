@@ -1,14 +1,14 @@
 "use client";
 import { SearchPreviewCard } from "./SearchPreviewCard";
 import { nanoid } from "nanoid";
-import { BookData } from "./SearchPreviewCard";
+import { Book } from "@/lib/validators/BookSChema";
 import { Dispatch, SetStateAction } from "react";
 
 export const BooksPreview = ({
   books,
   onDisplayChange,
 }: {
-  books: BookData[];
+  books: Book[];
   onDisplayChange: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (

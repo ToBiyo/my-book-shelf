@@ -1,139 +1,155 @@
 import { myBooks, wishRead, readingBooks } from "./schema";
 import { db } from "./db";
+import { and, eq } from "drizzle-orm";
 import { getUserByEmail } from "./userServices";
-import { eq } from "drizzle-orm";
-import { BookData } from "@/components/SearchPreviewCard";
-export type BookRecords = {
+import { Book } from "@/lib/validators/BookSchema";
+
+export type BookRecord = {
   id: string;
   userId: string | null;
-  bookId: string;
+  bookKey: string;
 };
 
-//mybooks queries
-export async function getMyBooks(email: string): Promise<BookRecords[] | []> {
-  const user = await getUserByEmail(email);
+export type ErrorResponse = {
+  success: false;
+  status: number;
+  message: string;
+};
+export type SuccessResponse<T> = {
+  success: true;
+  status: number;
+  data: T;
+};
 
-  if (!user) {
-    return [];
-  }
+export type BooksResponse = SuccessResponse<BookRecord[] | []> | ErrorResponse;
+export type Table = typeof myBooks | typeof wishRead | typeof readingBooks;
 
-  const id = user[0].id;
-  const books = await db.select().from(myBooks).where(eq(myBooks.userId, id));
-
-  return books;
-}
-
-export async function addToMyBoks(
+//queries books from selected table
+export async function getAllRecord(
   email: string,
-  book: BookData
-): Promise<BookRecords[]> {
-  const user = await getUserByEmail(email);
+  table: Table
+): Promise<BooksResponse> {
+  try {
+    const userResult = await getUserIdByEmail(email);
 
-  if (!user || !book) {
-    return [];
+    if (!userResult.success) {
+      return userResult;
+    }
+
+    const { userId } = userResult;
+    const books = await db.select().from(table).where(eq(table.userId, userId));
+    return {
+      success: true,
+      status: 200,
+      data: books,
+    };
+  } catch (error) {
+    console.error("DB error in getMyBooks: ", error);
+
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected error occureed while fetching books",
+    };
   }
-
-  const id = user[0].id;
-  const { authors, title, book_key, cover_url } = book;
-
-  const books = await db
-    .insert(myBooks)
-    .values({
-      userId: id,
-      bookId: book_key,
-      title: title,
-      coverUrl: cover_url,
-      authors: authors,
-    })
-    .returning();
-
-  return books;
 }
 
-//wishRead Books
-export async function getWishBooks(email: string): Promise<BookRecords[] | []> {
-  const user = await getUserByEmail(email);
-
-  if (!user) {
-    return [];
-  }
-
-  const id = user[0].id;
-  const books = await db.select().from(wishRead).where(eq(wishRead.userId, id));
-
-  return books;
-}
-
-export async function addToWishBoks(
+export async function addNewRecord(
   email: string,
-  book: BookData
-): Promise<BookRecords[] | []> {
-  const user = await getUserByEmail(email);
+  book: Book,
+  table: Table
+): Promise<BooksResponse> {
+  try {
+    const userResult = await getUserIdByEmail(email);
 
-  if (!user || !book) {
-    return [];
+    if (!userResult.success) {
+      return userResult;
+    }
+
+    const { userId } = userResult;
+    const { authors, title, bookKey, coverUrl } = book;
+
+    const books = await db
+      .insert(table)
+      .values({
+        userId: userId,
+        bookKey: bookKey,
+        title: title,
+        coverUrl: coverUrl,
+        authors: authors,
+      })
+      .returning();
+
+    return {
+      success: true,
+      status: 200,
+      data: books,
+    };
+  } catch (error) {
+    console.error("DB error in getMyBooks: ", error);
+
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected error occureed while fetching books",
+    };
   }
-
-  const id = user[0].id;
-
-  const { authors, title, book_key, cover_url } = book;
-
-  const books = await db
-    .insert(wishRead)
-    .values({
-      userId: id,
-      bookId: book_key,
-      title: title,
-      coverUrl: cover_url,
-      authors: authors,
-    })
-    .returning();
-
-  return books;
 }
 
-//reding Books
-export async function getReadingBooks(
+export async function deleteRecord(
+  bookId: string,
+  email: string,
+  table: Table
+): Promise<BooksResponse> {
+  try {
+    const userResult = await getUserIdByEmail(email);
+
+    if (!userResult.success) {
+      return userResult;
+    }
+
+    const { userId } = userResult;
+
+    const book = await db
+      .delete(table)
+      .where(and(eq(table.id, bookId), eq(table.userId, userId)))
+      .returning();
+
+    return {
+      success: true,
+      status: 200,
+      data: book,
+    };
+  } catch (error) {
+    console.error("DB error : " + error);
+
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected error occureed while fetching books",
+    };
+  }
+}
+
+type GetUserResult =
+  | { success: true; userId: string }
+  | { success: false; status: number; message: string };
+
+export const getUserIdByEmail = async (
   email: string
-): Promise<BookRecords[] | []> {
+): Promise<GetUserResult> => {
   const user = await getUserByEmail(email);
 
   if (!user) {
-    return [];
+    return {
+      success: false,
+      status: 404,
+      message: "Unauthenticated or book data missing",
+    };
   }
 
-  const id = user[0].id;
-  const books = await db
-    .select()
-    .from(readingBooks)
-    .where(eq(readingBooks.userId, id));
-
-  return books;
-}
-
-export async function addToReadingBoks(
-  email: string,
-  book: BookData
-): Promise<BookRecords[] | []> {
-  const user = await getUserByEmail(email);
-
-  if (!user || !book) {
-    return [];
-  }
-
-  const id = user[0].id;
-  const { authors, title, book_key, cover_url } = book;
-
-  const books = await db
-    .insert(readingBooks)
-    .values({
-      userId: id,
-      bookId: book_key,
-      title: title,
-      coverUrl: cover_url,
-      authors: authors,
-    })
-    .returning();
-
-  return books;
-}
+  return {
+    success: true,
+    userId: user[0].id,
+  };
+};

@@ -1,21 +1,15 @@
 import Image from "next/image";
 import { nanoid } from "nanoid";
 import { AddToListBtn } from "./AddToListBtn";
+import { Book } from "@/lib/validators/BookSchema";
 
-export type BookData = {
-  authors: string[];
-  title: string;
-  book_key: string;
-  cover_url: string;
-};
-
-export const SearchPreviewCard = ({ book }: { book: BookData }) => {
-  const { title, authors, cover_url } = book;
+export const SearchPreviewCard = ({ book }: { book: Book }) => {
+  const { title, authors, coverUrl } = book;
 
   return (
     <div className="flex items-center  justify-between">
       <Image
-        src={cover_url}
+        src={coverUrl}
         width={80}
         height={70}
         alt={title + " book cover"}

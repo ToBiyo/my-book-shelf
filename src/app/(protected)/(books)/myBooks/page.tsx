@@ -1,5 +1,5 @@
-import { PreviewContainer } from "@/components/PreviewContainer";
-import { BookListPreview } from "@/components/BookListPreview";
+import { PreviewContainer } from "@/components/BooksPreview/PreviewContainer";
+import { BookListPreview } from "@/components/BookList/BookListPreview";
 import { getCookiesAction } from "@/lib/util/authenticationAction";
 
 export default async function page() {

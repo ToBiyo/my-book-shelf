@@ -1,28 +1,43 @@
-export const fetchSearchApiData = async <T,>(query: T) => {
-  const req = await fetch("https://openlibrary.org/search.json?q=" + query);
-  const data = await req.json();
-  const books = data.docs;
-
-  return books;
-};
-
-export const fetchWorkApiData = async <T,>(id: T) => {
-  const req = await fetch(`https://openlibrary.org${id}.json`);
-  const data = await req.json();
-
-  return data;
-};
+import { Book } from "../validators/BookSchema";
+import { getUserByEmail } from "@/db/userServices";
 
 export const filterBooks = (books: any[]) => {
   const filteredBooks = books
     .filter((book: any) => "author_name" in book && "cover_edition_key" in book)
-    .map((book: any) => {
-      return {
-        authors: book.author_name,
-        title: book.title,
-        book_key: book.key,
-        cover_url: `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-L.jpg`,
+    .map((item: any) => {
+      const book: Book = {
+        authors: item.author_name,
+        title: item.title,
+        bookKey: item.key,
+        coverUrl: `https://covers.openlibrary.org/b/olid/${item.cover_edition_key}-L.jpg`,
       };
+
+      return book;
     });
   return filteredBooks;
 };
+
+/* //get userId
+type GetUserResult =
+  | { success: true; userId: string }
+  | { success: false; status: number; message: string };
+
+export const getUserIdByEmail = async (
+  email: string
+): Promise<GetUserResult> => {
+  const user = await getUserByEmail(email);
+
+  if (!user) {
+    return {
+      success: false,
+      status: 404,
+      message: "Unauthenticated or book data missing",
+    };
+  }
+
+  return {
+    success: true,
+    userId: user[0].id,
+  };
+};
+ */

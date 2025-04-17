@@ -1,6 +1,6 @@
 import { getCookiesAction } from "@/lib/util/authenticationAction";
-import { BookListPreview } from "@/components/BookListPreview";
-import { PreviewContainer } from "@/components/PreviewContainer";
+import { BookListPreview } from "@/components/BookList/BookListPreview";
+import { PreviewContainer } from "@/components/BooksPreview/PreviewContainer";
 
 export default async function page() {
   const SessionToken = await getCookiesAction("authjs.session-token");
@@ -12,7 +12,6 @@ export default async function page() {
     },
   });
   const { books } = await request.json();
-  console.log(books);
 
   return (
     <div className="flex flex-col">

@@ -1,11 +1,15 @@
 import { NextRequest } from "next/server";
-import { getWishBooks, addToWishBoks } from "@/db/bookServices";
-import { getHandler, postHandler } from "@/lib/apiHandler";
+import { getHandler, postHandler, deleteHandler } from "@/lib/apiHandler";
+import { wishRead } from "@/db/schema";
 
 export async function GET(req: NextRequest) {
-  return getHandler(req, getWishBooks);
+  return getHandler(req, wishRead);
 }
 
 export async function POST(req: NextRequest) {
-  return postHandler(req, addToWishBoks);
+  return postHandler(req, wishRead);
+}
+
+export async function DELETE(req: NextRequest) {
+  return deleteHandler(req, wishRead);
 }

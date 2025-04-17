@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BookData } from "./SearchPreviewCard";
+import { Book } from "@/lib/validators/BookSchema";
 
 /* bookShelf */
 export const AddToListBtn = ({
@@ -7,7 +7,7 @@ export const AddToListBtn = ({
   apiEndpoint,
   buttonText,
 }: {
-  book: BookData;
+  book: Book;
   apiEndpoint: string;
   buttonText: string;
 }) => {
@@ -24,17 +24,17 @@ export const AddToListBtn = ({
     );
 
     const response = await request.json();
-
     console.log(response);
   };
 
   useEffect(() => {
+    console.log(book);
     if (!clickedTimes) {
       return;
     }
     const debounceRequest = setTimeout(() => {
       postNewBook();
-    }, 300);
+    }, 100);
     return () => clearTimeout(debounceRequest);
   }, [clickedTimes]);
 

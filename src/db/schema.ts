@@ -113,7 +113,7 @@ export const myBooks = pgTable(
       .notNull()
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-    bookId: varchar("book_id").notNull(),
+    bookKey: varchar("book_id").notNull(),
     title: varchar("book_title").notNull(),
     coverUrl: varchar("cover_url").notNull(),
     authors: varchar({ length: 125 }).array().notNull(),
@@ -131,7 +131,7 @@ export const wishRead = pgTable("wish_read", {
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: varchar("book_id").notNull(),
+  bookKey: varchar("book_id").notNull(),
   title: varchar("book_title").notNull(),
   coverUrl: varchar("cover_url").notNull(),
   authors: varchar({ length: 125 }).array().notNull(),
@@ -144,7 +144,7 @@ export const readingBooks = pgTable("reading_books", {
     .notNull()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  bookId: varchar("book_id").notNull(),
+  bookKey: varchar("book_id").notNull(),
   title: varchar("book_title").notNull(),
   coverUrl: varchar("cover_url").notNull(),
   authors: varchar({ length: 125 }).array().notNull(),

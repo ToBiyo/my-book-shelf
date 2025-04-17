@@ -2,7 +2,6 @@
 import { signOutAction } from "@/lib/util/authenticationAction";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "../../auth";
 import {
   faCaretDown,
   faGear,
@@ -18,7 +17,7 @@ export const ManageProfileBtn = () => {
   const [display, setDispaly] = useState(false);
 
   return (
-    <div>
+    <div className="">
       <button
         className="min-w-18 flex gap-1 items-center"
         onClick={() => {
@@ -36,7 +35,7 @@ export const ManageProfileBtn = () => {
         <FontAwesomeIcon icon={faCaretDown} className="text-emerald-400 w-3" />
       </button>
       <div
-        className={`absolute top-14 flex-col gap-1 items-start ${
+        className={`absolute top-14 flex-col gap-1 items-start z-50 ${
           display ? "flex" : "hidden"
         } `}
       >
