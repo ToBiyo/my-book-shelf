@@ -26,15 +26,16 @@ export async function getHandler(req: NextRequest, table: Table) {
     const records = await getAllRecord(email, table);
 
     if (!records.success) {
-      return new Response(JSON.stringify({ message: "Records not found" }), {
-        status: 404,
-        headers: headers,
-      });
+      return new Response(
+        JSON.stringify({ success: false, message: "Records not found" }),
+        {
+          status: 404,
+          headers: headers,
+        }
+      );
     }
 
-    console.log(records);
-
-    return new Response(JSON.stringify({ books: records.data }), {
+    return new Response(JSON.stringify({ success: true, data: records.data }), {
       status: 200,
       headers: headers,
     });
@@ -67,14 +68,31 @@ export async function postHandler(req: NextRequest, table: Table) {
     const { book } = newRecord;
 
     if (!book) {
-      return new Response(JSON.stringify({ message: "No book was selected" }), {
-        status: 402,
-      });
+      return new Response(
+        JSON.stringify({ success: false, message: "No book was selected" }),
+        {
+          status: 402,
+        }
+      );
     }
 
     const result = await addNewRecord(email, book, table);
 
-    return new Response(JSON.stringify({ result }), {
+    if (result.status === 404) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          status: 403,
+          message: "Book already exist on this list!",
+        }),
+        {
+          status: 403,
+          headers: headers,
+        }
+      );
+    }
+
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: headers,
     });

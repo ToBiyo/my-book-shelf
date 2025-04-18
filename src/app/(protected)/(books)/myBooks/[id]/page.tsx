@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { nanoid } from "nanoid";
-
 import { Rating } from "@/components/Rating";
+import { getCookiesAction } from "@/lib/util/authenticationAction";
+import { formatRating } from "@/lib/util/utils";
 
 export default async function Page({
   params,
@@ -9,27 +10,32 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const SessionToken = await getCookiesAction("authjs.session-token");
 
-  const decodedQuery = decodeURIComponent(id);
+  const response = await fetch(
+    "http://localhost:3000/api/books/myBooks/" + id,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `authjs.session-token=${SessionToken}`,
+      },
+    }
+  );
 
-  const queryData = decodedQuery.split(",");
+  const result = await response.json();
 
-  const workId = queryData.pop();
+  console.log(result.data[0]);
 
-  const endpoint = "https://openlibrary.org/works/" + workId + ".json";
-  const response = await fetch(endpoint);
-  const data = await response.json();
+  const { title, coverUrl, authors, rating } = result.data[0];
+  console.log(result.data[0]);
 
-  const { covers, title, description } = data;
-
-  const coverUrl =
-    "https://covers.openlibrary.org/b/id/" + covers[0] + "-L.jpg";
+  const formattedRate = formatRating(rating);
 
   return (
     <div className="flex flex-col items-center my-20 mx-auto gap-10 w-2/3">
       <h2 className="text-4xl">{title}</h2>
       <div className="flex gap-3">
-        {queryData.map((author: string) => (
+        {authors.map((author: string) => (
           <h3 key={nanoid()}>{author}</h3>
         ))}
       </div>
@@ -40,8 +46,7 @@ export default async function Page({
         alt="book cover"
         className="min-w-44 shadow-xl shadow-black"
       ></Image>
-      <Rating></Rating>
-      {/* <p>{description}</p> */}
+      <Rating id={id} rate={formattedRate}></Rating>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Book } from "@/lib/validators/BookSchema";
 
 /* bookShelf */
@@ -6,15 +6,18 @@ export const AddToListBtn = ({
   book,
   apiEndpoint,
   buttonText,
+  onButtonClick,
 }: {
   book: Book;
   apiEndpoint: string;
   buttonText: string;
+  onButtonClick: Dispatch<SetStateAction<string>>;
 }) => {
   const [clickedTimes, setClickedTimes] = useState<number>(0);
+  const [message, setMessage] = useState<string>("");
 
-  const postNewBook = async () => {
-    const request = await fetch(
+  const addNewBook = async () => {
+    const response = await fetch(
       "http://localhost:3000/api/books/" + apiEndpoint,
       {
         method: "POST",
@@ -23,17 +26,24 @@ export const AddToListBtn = ({
       }
     );
 
-    const response = await request.json();
-    console.log(response);
+    const result = await response.json();
+    if (result.success) {
+      const bookTitle = result.data[0].title;
+      onButtonClick(
+        bookTitle + " successfully addedd to " + buttonText + " list."
+      );
+    }
+    if (response.status === 403) {
+      onButtonClick(result.message);
+    }
   };
 
   useEffect(() => {
-    console.log(book);
     if (!clickedTimes) {
       return;
     }
     const debounceRequest = setTimeout(() => {
-      postNewBook();
+      addNewBook();
     }, 100);
     return () => clearTimeout(debounceRequest);
   }, [clickedTimes]);

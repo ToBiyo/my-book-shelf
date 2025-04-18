@@ -17,6 +17,20 @@ export const filterBooks = (books: any[]) => {
   return filteredBooks;
 };
 
+export const formatRating = (n: number) => {
+  let result = [];
+
+  for (let i = 0; i < 5; i++) {
+    if (i < n) {
+      result.push(1);
+    } else {
+      result.push(0);
+    }
+  }
+
+  return result;
+};
+
 /* //get userId
 type GetUserResult =
   | { success: true; userId: string }

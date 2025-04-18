@@ -5,29 +5,29 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import { ReadedBook } from "@/lib/validators/BookSchema";
 import { useState, useEffect } from "react";
+import { Rating } from "../Rating";
+import { formatRating } from "@/lib/util/utils";
 
-export const BookListCard = ({ book }: { book: ReadedBook }) => {
+export const BookListCard = ({
+  book,
+  endpoint,
+}: {
+  book: ReadedBook;
+  endpoint: string;
+}) => {
   const { id, authors, bookKey, coverUrl, title, rating } = book;
   const [clicked, setclicked] = useState<number>(0);
-
-  const bookIdSegments = bookKey.split("/");
-  const key = bookIdSegments[2];
-
-  const authorsFormatted = authors.reduce(
-    (prev: string, next: string) => prev + "," + next
-  );
-
-  const dynamicEndPoint = authorsFormatted + "," + key;
+  const formattedRating = formatRating(rating);
 
   const deleteBook = async () => {
-    const request = await fetch("http://localhost:3000/api/books/myBooks", {
+    const request = await fetch("http://localhost:3000/api/books/" + endpoint, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bookId: id }),
     });
 
     const response = await request.json();
-    console.log(response);
+    //aggiungere feedback per libro rimosso e refreshare i dati della pagina
   };
 
   useEffect(() => {
@@ -66,12 +66,12 @@ export const BookListCard = ({ book }: { book: ReadedBook }) => {
             {author}
           </h3>
         ))}
-        <label htmlFor="">Rate:</label>
-        {rating ? <h3>{rating}</h3> : <h3>N/A</h3>}
+
+        <Rating id={id} rate={formattedRating}></Rating>
       </div>
       <div className="flex gap-x-3">
         <Link
-          href={"/myBooks/" + dynamicEndPoint}
+          href={"/myBooks/" + id}
           className="p-3 bg-emerald-400 rounded-xl text-white my-2"
         >
           See more

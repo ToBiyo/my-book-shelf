@@ -5,7 +5,7 @@ import { fetchSearchApiData } from "@/lib/util/dataFetch";
 import { BooksPreview } from "./BooksPreview";
 import { BooksSearchBar } from "./BooksSearchBar";
 import { filterBooks } from "@/lib/util/utils";
-import { Book } from "@/lib/validators/BookSChema";
+import { Book } from "@/lib/validators/BookSchema";
 import { Dispatch, SetStateAction } from "react";
 import { CloseButton } from "../CloseButton";
 
@@ -17,7 +17,6 @@ export const PreviewSearchedBooks = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [books, setBooks] = useState<Book[] | null>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [display, setDisplay] = useState<boolean>(false);
 
   const getData = async (query: string) => {
     const booksData = await fetchSearchApiData(query);
@@ -36,8 +35,8 @@ export const PreviewSearchedBooks = ({
       getData(searchInput);
     }, 1000);
 
-    setDisplay(true);
     setLoading(false);
+
     return () => {
       return clearTimeout(debounceData);
     };
@@ -49,9 +48,7 @@ export const PreviewSearchedBooks = ({
       <BooksSearchBar onSearchInputChange={setSearchInput} />
       {loading && <h2>Loading...</h2>}
       <SessionProvider>
-        {books && display && (
-          <BooksPreview books={books} onDisplayChange={setDisplay} />
-        )}
+        {books && !loading && <BooksPreview books={books} />}
       </SessionProvider>
     </div>
   );

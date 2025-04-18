@@ -69,21 +69,31 @@ export async function addNewRecord(
     const { userId } = userResult;
     const { authors, title, bookKey, coverUrl } = book;
 
-    const books = await db
-      .insert(table)
-      .values({
-        userId: userId,
-        bookKey: bookKey,
-        title: title,
-        coverUrl: coverUrl,
-        authors: authors,
-      })
-      .returning();
+    const getBook = await getBookByTitle(title, userId, table);
+
+    if (getBook.status === 404) {
+      const books = await db
+        .insert(table)
+        .values({
+          userId: userId,
+          bookKey: bookKey,
+          title: title,
+          coverUrl: coverUrl,
+          authors: authors,
+        })
+        .returning();
+
+      return {
+        success: true,
+        status: 200,
+        data: books,
+      };
+    }
 
     return {
-      success: true,
-      status: 200,
-      data: books,
+      success: false,
+      status: 404,
+      message: "Book already exist on " + table,
     };
   } catch (error) {
     console.error("DB error in getMyBooks: ", error);
@@ -152,4 +162,102 @@ export const getUserIdByEmail = async (
     success: true,
     userId: user[0].id,
   };
+};
+
+//recover book
+
+export const getBookByTitle = async (
+  title: string,
+  userId: string,
+  table: Table
+) => {
+  try {
+    const book = await db
+      .select()
+      .from(table)
+      .where(and(eq(table.title, title), eq(table.userId, userId)));
+
+    if (book.length > 0) {
+      return {
+        success: true,
+        code: 200,
+        data: book,
+      };
+    }
+
+    return {
+      success: false,
+      status: 404,
+      data: book,
+    };
+  } catch (error) {
+    console.error("DB unexpected error : " + error);
+
+    return {
+      succes: false,
+      status: 500,
+      message: error,
+    };
+  }
+};
+
+//update book rating
+export const updateRating = async (bookId: string, rating: number) => {
+  try {
+    const updatedRecord = await db
+      .update(myBooks)
+      .set({ rating: rating })
+      .where(eq(myBooks.id, bookId))
+      .returning();
+
+    if (updatedRecord.length > 0) {
+      return {
+        success: true,
+        status: 200,
+        data: updatedRecord,
+      };
+    }
+
+    return {
+      success: false,
+      status: 400,
+      message: "Failed to update rating",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected db error",
+    };
+  }
+};
+
+//get book by id
+
+export const getBookById = async (bookId: string, table: Table) => {
+  try {
+    const record = await db.select().from(table).where(eq(table.id, bookId));
+
+    if (record.length === 0) {
+      return {
+        success: false,
+        status: 400,
+        data: record,
+      };
+    }
+
+    return {
+      success: true,
+      status: 200,
+      data: record,
+    };
+  } catch (error) {
+    console.error("DB error : " + error);
+
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected database error",
+    };
+  }
 };
